@@ -2,17 +2,19 @@ import React, {useState} from 'react';
 import { Text, ScrollView } from 'react-native';
 import {Provider as PaperProvider, Button, TextInput, useTheme} from 'react-native-paper';
 import styles from './styles/Style'; 
+import theme from './styles/Theme'; 
 import RadioButton from './components/RadioButton';
 import DropDown from 'react-native-paper-dropdown';
 
 
 export default function App() {
+  const {colors} = useTheme(theme);
   const [genderValue, setGenderValue] = useState(1);
   const [bottles, setBottles] = useState(1);
   const [time, setTime] = useState(1);
 
-  const [showDropDown1, setShowDropDown1] = useState(false);
-  const [showDropDown2, setShowDropDown2] = useState(false);
+  const [showDropDownBottles, setShowDropDownBottles] = useState(false);
+  const [showDropDownTime, setShowDropDownTime] = useState(false);
 
   const bottlesList = Array(10)
     .fill('')
@@ -35,25 +37,24 @@ export default function App() {
   
 
   return (
-    <PaperProvider>
+    <PaperProvider theme={theme}>
       <ScrollView style={styles.container}>
-        <Text style={styles.headline1}>Alcometer</Text>
+        <Text style={[styles.headline1, {color: colors.primary}]}>Alcometer</Text>
         <Text style={styles.headline2}>Weight</Text>
         <TextInput 
           label='Type in your weight here' 
           mode='outlined' 
-          style={styles.textInput} 
-          keyboardType='numeric'/>
+          keyboardType='numeric'
+        />
         <Text style={styles.headline2}>Bottles</Text>
         <DropDown
             mode={'outlined'}
             value={bottles}
             setValue={setBottles}
             list={bottlesList}
-            style={styles.dropDown}
-            visible={showDropDown1}
-            showDropDown={() => setShowDropDown1(true)}
-            onDismiss={() => setShowDropDown1(false)}
+            visible={showDropDownBottles}
+            showDropDown={() => setShowDropDownBottles(true)}
+            onDismiss={() => setShowDropDownBottles(false)}
           />
         <Text style={styles.headline2}>Time</Text>
         <DropDown
@@ -61,18 +62,19 @@ export default function App() {
             value={time}
             setValue={setTime}
             list={timeList}
-            style={styles.dropDown}
-            visible={showDropDown2}
-            showDropDown={() => setShowDropDown2(true)}
-            onDismiss={() => setShowDropDown2(false)}
+            defaultValue={1}
+            visible={showDropDownTime}
+            showDropDown={() => setShowDropDownTime(true)}
+            onDismiss={() => setShowDropDownTime(false)}
+            
           />
         <Text style={styles.headline2}>Gender</Text>
         <RadioButton 
-        options={genderRadioButton} 
-        onPress={(value) => {setGenderValue(value)}} 
-        defaultValue={1}
+          options={genderRadioButton} 
+          onPress={(value) => {setGenderValue(value)}} 
+          defaultValue={1}
         />
-        <Text>{genderValue}</Text>
+        <Text>{genderValue}{bottles}{time}</Text>
         <Button 
           mode='contained'
           icon='calculator'
