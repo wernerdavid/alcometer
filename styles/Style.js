@@ -19,11 +19,11 @@ export default StyleSheet.create({
     fontWeight: 'bold',
     marginTop: 15,
   },
-  form: {
-      alignSelf: 'stretch',
-  },
-  textInput: {
-    
-      
-  },
+  output: {
+    marginTop: 16,
+    marginBottom: 24,
+    fontSize: 30,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  }
 })

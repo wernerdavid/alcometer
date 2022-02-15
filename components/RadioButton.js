@@ -36,7 +36,8 @@ const styles = StyleSheet.create({
         paddingRight: 30,
     },
     label: {
-        marginRight: 10,
+      fontSize: 16,
+      marginRight: 10,
     },
     cirlce: {
         height: 28,

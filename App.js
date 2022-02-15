@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { Text, ScrollView } from 'react-native';
+import { Text, View, ScrollView } from 'react-native';
 import {Provider as PaperProvider, Button, TextInput, useTheme} from 'react-native-paper';
 import styles from './styles/Style'; 
 import theme from './styles/Theme'; 
@@ -9,14 +9,18 @@ import DropDown from 'react-native-paper-dropdown';
 
 export default function App() {
   const {colors} = useTheme(theme);
-  const [genderValue, setGenderValue] = useState(1);
+  const [weight, setWeight] = useState('');
   const [bottles, setBottles] = useState(1);
   const [time, setTime] = useState(1);
+  const [genderValue, setGenderValue] = useState(1);
+  const [result, setResult] = useState(0);
 
   const [showDropDownBottles, setShowDropDownBottles] = useState(false);
   const [showDropDownTime, setShowDropDownTime] = useState(false);
 
-  const bottlesList = Array(10)
+
+
+  const bottlesList = Array(15)
     .fill('')
     .map((_,i) => ({ label: `${i + 1} bottles`, value: `${i + 1}`}))
 
@@ -34,17 +38,78 @@ export default function App() {
       value: 2
     }
   ]
-  
 
+  const isNull = (value, message) => {
+    if (value.length === 0) {
+      alert(message);
+      return false;
+    }
+    return true; 
+
+  }
+
+  const isNumeric = (value, message) => {
+    if (isNaN(value) === true) {
+      alert(message);
+      return false;
+    }
+    return true; 
+  }
+
+  const getResultColor = () => {
+    let color; 
+    if (result < 0.3) {
+      color = 'green';
+  } else if (result >= 0.3 && result < 0.5) {
+      color = 'orange';
+  } else if (result >= 1.5) {
+      color = 'red';
+  } else {
+      color = 'red';
+  }
+  return color; 
+}
+
+
+  const calculate = () => {
+    if (isNull(weight, "Please type in your weight before calculation!")===false) return;
+    const formattedWeight = weight.replace(',','.');
+    if (isNumeric(formattedWeight, "Type in weight as number!")===false) return;
+
+    const litres = bottles * 0.33;
+    const grams = litres * 8 * 4.5;
+    const burning = formattedWeight / 10;
+    const gramsLeft = grams - (burning * time);
+
+    if(genderValue === 1){
+      const resultMale = gramsLeft / (formattedWeight * 0.7); 
+      if (resultMale < 0){
+        setResult(0);
+      } else {
+        setResult(resultMale);
+      }
+    } else {
+      const resultFemale = gramsLeft / (formattedWeight * 0.6); 
+      if (resultFemale < 0){
+        setResult(0);
+      } else {
+        setResult(resultFemale);
+      }
+    }
+  }
+  
   return (
     <PaperProvider theme={theme}>
-      <ScrollView style={styles.container}>
+      <View style={styles.container}>
+      <ScrollView >
         <Text style={[styles.headline1, {color: colors.primary}]}>Alcometer</Text>
         <Text style={styles.headline2}>Weight</Text>
         <TextInput 
           label='Type in your weight here' 
           mode='outlined' 
           keyboardType='numeric'
+          value={weight}
+          onChangeText={setWeight}
         />
         <Text style={styles.headline2}>Bottles</Text>
         <DropDown
@@ -62,11 +127,9 @@ export default function App() {
             value={time}
             setValue={setTime}
             list={timeList}
-            defaultValue={1}
             visible={showDropDownTime}
             showDropDown={() => setShowDropDownTime(true)}
             onDismiss={() => setShowDropDownTime(false)}
-            
           />
         <Text style={styles.headline2}>Gender</Text>
         <RadioButton 
@@ -74,13 +137,15 @@ export default function App() {
           onPress={(value) => {setGenderValue(value)}} 
           defaultValue={1}
         />
-        <Text>{genderValue}{bottles}{time}</Text>
+        <Text style={[styles.output, {color: getResultColor()}]}>{result.toFixed(2)}</Text>
         <Button 
           mode='contained'
           icon='calculator'
+          onPress={calculate}
           >Calculate
         </Button>
       </ScrollView>
+      </View>
     </PaperProvider>
   );
 }
