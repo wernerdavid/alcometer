@@ -10,8 +10,8 @@ import theme from './styles/Theme';
 export default function App() {
   const { colors } = useTheme(theme);
   const [weight, setWeight] = useState('');
-  const [bottles, setBottles] = useState(1);
-  const [time, setTime] = useState(1);
+  const [bottles, setBottles] = useState('1');
+  const [time, setTime] = useState('1');
   const [genderValue, setGenderValue] = useState(1);
   const [result, setResult] = useState(0);
 
